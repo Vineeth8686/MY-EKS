@@ -33,10 +33,5 @@ managedNodeGroups:
       withAddonPolicies:
         ebs: true
         albIngress: true
-    updateConfig:
-      tags:
-        Name: demo-eks-ng-general
-        Environment: dev
-        Application: demo
-        Owner: platform-team
-        CostCenter: cc-1234
+    tags:
+      Name: demo-eks-ng-general
