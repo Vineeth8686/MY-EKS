@@ -1,0 +1,25 @@
+# ingress-with-dns.yaml - Ingress that creates a Route 53 record
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-1
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    # alb.ingress.kubernetes.io/group.name: vineeth-group
+    # alb.ingress.kubernetes.io/group.order: "1"
+
+spec:
+  ingressClassName: alb
+  rules:
+    - host: www.vineeth.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-1
+                port:
+                  number: 80

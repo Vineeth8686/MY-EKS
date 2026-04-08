@@ -1,0 +1,42 @@
+# filename: cluster-minimal.yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: demo-eks
+  region: us-east-1          # change if needed
+  version: "1.33"              # use a version supported in your region
+
+iam:
+  withOIDC: true               # enable IRSA
+
+addons:
+  - name: vpc-cni
+    version: latest
+  - name: coredns
+    version: latest
+  - name: kube-proxy
+    version: latest
+  - name: aws-ebs-csi-driver
+    version: latest
+
+managedNodeGroups:
+  - name: ng-general
+    instanceTypes: ["t2.medium"]   # adjust size/family
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 4
+    privateNetworking: true       # launch in private subnets when eksctl creates the VPC
+    ssh:
+      enableSsm: true             # access nodes via SSM (no SSH key needed)
+    iam:
+      withAddonPolicies:
+        ebs: true
+        albIngress: true
+    updateConfig:
+      tags:
+        Name: demo-eks-ng-general
+        Environment: dev
+        Application: demo
+        Owner: platform-team
+        CostCenter: cc-1234

@@ -1,0 +1,18 @@
+curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v3.1.0/docs/install/iam_policy.json
+
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam-policy.json
+
+eksctl create iamserviceaccount \
+--cluster=demo-eks \
+--namespace=kube-system \
+--name=aws-load-balancer-controller \
+--attach-policy-arn=arn:aws:iam::356507924897:policy/AWSLoadBalancerControllerIAMPolicy \
+--override-existing-serviceaccounts \
+--region us-east-1 \
+--approve
+
+helm repo add eks https://aws.github.io/eks-charts
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=demo-eks --set serviceAccount.create=false --set serviceAccount.name=aws-load-balancer-controller

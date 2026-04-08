@@ -1,0 +1,23 @@
+1.Create the following policy to set up IAM permissions that give the ExternalDNS pod permissions to create, update, and delete Route 53 records in your AWS account:
+use route53Policy.json
+
+aws iam create-policy \
+  --policy-name route53Policy \
+  --policy-document file://route53Policy.json
+
+2.Use the policy to create an IAM role for the service account
+
+eksctl create iamserviceaccount --name external-dns --namespace kube-system \
+  --cluster demo-eks --attach-policy-arn "arn:aws:iam::851725212263:policy/route53Policy" --approve
+
+3.Deploy the manifest.
+
+  # eksctl create iamserviceaccount \
+  #   --cluster=demo-eks \
+  #   --namespace=kube-system \
+  #   --name=aws-load-balancer-controller \
+  #   --attach-policy-arn=arn:aws:iam::851725212263:policy/AWSLoadBalancerControllerIAMPolicy \
+  #   --override-existing-serviceaccounts \
+  #   --region us-east-1 \
+  #   --approve
+

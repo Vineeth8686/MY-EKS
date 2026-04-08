@@ -1,0 +1,13 @@
+#kubectl run bb --image=busybox
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-1
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: ClusterIP
+  selector:
+    app: nginx-1
